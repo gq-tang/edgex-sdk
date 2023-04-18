@@ -38,6 +38,8 @@ type deviceService struct {
 	flags      *flags.Default
 	dic        *di.Container
 
+	cancel context.CancelFunc
+
 	addDevCallback    []DeviceAction
 	updateDevCallback []DeviceAction
 	deleteDevCallback []DeviceAction

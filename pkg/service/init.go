@@ -11,13 +11,35 @@ package service
 
 import (
 	"context"
+	"fmt"
 	bootstrapContainer "github.com/edgexfoundry/go-mod-bootstrap/v3/bootstrap/container"
-
 	"github.com/edgexfoundry/go-mod-bootstrap/v3/bootstrap/handlers"
 	"github.com/edgexfoundry/go-mod-bootstrap/v3/bootstrap/startup"
 	"github.com/edgexfoundry/go-mod-bootstrap/v3/di"
+	"os"
 	"sync"
 )
+
+var (
+	defaultDeviceService *deviceService
+	once                 sync.Once
+)
+
+func BootStrap(serviceKey string) {
+	once.Do(func() {
+		defaultDeviceService, _ = NewDeviceService(serviceKey)
+		go func() {
+			if err := defaultDeviceService.Run(); err != nil {
+				fmt.Println(err)
+				os.Exit(-1)
+			}
+		}()
+	})
+}
+
+func DeviceService() *deviceService {
+	return defaultDeviceService
+}
 
 func (s *deviceService) messageBusBootstrapHandler(ctx context.Context, wg *sync.WaitGroup, startupTimer startup.Timer, dic *di.Container) bool {
 	if !handlers.MessagingBootstrapHandler(ctx, wg, startupTimer, dic) {

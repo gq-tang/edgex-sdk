@@ -14,10 +14,14 @@ import (
 	"fmt"
 	"github.com/edgexfoundry/go-mod-core-contracts/v3/dtos"
 	"github.com/gq-tang/edgex-sdk/pkg/service"
+	"os"
+	"os/signal"
 )
 
 func main() {
-	ds, _ := service.NewDeviceService("test")
+	service.BootStrap("test")
+	fmt.Println("after BootStrap")
+	ds := service.DeviceService()
 	print := func(device dtos.Device) error {
 		data, _ := json.MarshalIndent(device, "", " ")
 		fmt.Println("device add execute: ", string(data))
@@ -26,9 +30,8 @@ func main() {
 	ds.HandleDeviceAdd(print)
 	ds.HandleDeviceUpdate(print)
 	ds.HandleDeviceDelete(print)
-	if err := ds.Run(); err != nil {
-		fmt.Println("err:", err)
-		return
-	}
 
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
 }
