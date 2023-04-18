@@ -37,6 +37,12 @@ type deviceService struct {
 	config     *config.ConfigurationStruct
 	flags      *flags.Default
 	dic        *di.Container
+
+	addDevCallback    []DeviceAction
+	updateDevCallback []DeviceAction
+	deleteDevCallback []DeviceAction
+
+	updateProfileCallback []ProfileAction
 }
 
 func NewDeviceService(serviceKey string) (*deviceService, error) {
@@ -83,6 +89,7 @@ func (s *deviceService) Run() error {
 		true,
 		bootstrapTypes.ServiceTypeDevice,
 		[]bootstrapInterfaces.BootstrapHandler{
+			s.messageBusBootstrapHandler,
 			handlers.NewServiceMetrics(s.serviceKey).BootstrapHandler, // Must be after Messaging
 			handlers.NewClientsBootstrap().BootstrapHandler,
 			handlers.NewStartMessage(s.serviceKey, sdkCommon.ServiceVersion).BootstrapHandler,
