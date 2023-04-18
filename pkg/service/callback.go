@@ -39,6 +39,10 @@ func (s *deviceService) HandleDeviceDelete(fn DeviceAction) {
 	s.deleteDevCallback = append(s.deleteDevCallback, fn)
 }
 
+func (s *deviceService) HandleProfileUpdate(fn ProfileAction) {
+	s.updateProfileCallback = append(s.updateProfileCallback, fn)
+}
+
 func (s *deviceService) metadataSystemEventsCallback(ctx context.Context, dic *di.Container) errors.EdgeX {
 	lc := bootstrapContainer.LoggingClientFrom(dic.Get)
 	messageBusInfo := container.ConfigurationFrom(dic.Get).MessageBus
