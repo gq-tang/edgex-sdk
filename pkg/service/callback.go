@@ -42,9 +42,9 @@ func (s *deviceService) HandleDeviceDelete(fn DeviceAction) {
 func (s *deviceService) metadataSystemEventsCallback(ctx context.Context, dic *di.Container) errors.EdgeX {
 	lc := bootstrapContainer.LoggingClientFrom(dic.Get)
 	messageBusInfo := container.ConfigurationFrom(dic.Get).MessageBus
-	deviceService := container.DeviceServiceFrom(dic.Get)
+
 	metadataSystemEventTopic := common.BuildTopic(messageBusInfo.GetBaseTopicPrefix(),
-		common.MetadataSystemEventSubscribeTopic, deviceService.Name, "#")
+		common.MetadataSystemEventSubscribeTopic, "#", "#")
 
 	lc.Infof("Subscribing to System Events on topic: %s", metadataSystemEventTopic)
 
@@ -78,12 +78,6 @@ func (s *deviceService) metadataSystemEventsCallback(ctx context.Context, dic *d
 				err := json.Unmarshal(msgEnvelope.Payload, &systemEvent)
 				if err != nil {
 					lc.Errorf("failed to JSON decoding system event: %s", err.Error())
-					continue
-				}
-
-				serviceName := container.DeviceServiceFrom(dic.Get).Name
-				if systemEvent.Owner != serviceName {
-					lc.Errorf("unmatched system event owner %s with service name %s", systemEvent.Owner, serviceName)
 					continue
 				}
 

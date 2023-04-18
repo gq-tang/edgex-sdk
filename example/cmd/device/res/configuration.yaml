@@ -1,0 +1,32 @@
+MaxEventSize: 0
+Writable:
+  LogLevel: INFO
+Registry:
+  Host: 192.168.237.129
+  Port: 8500
+  Type: consul
+Clients:
+  core-metadata:
+    Protocol: http
+    Host: 192.168.237.129
+    Port: 59881
+MessageBus:
+  Protocol: redis
+  Host: 192.168.237.129
+  Port: 6379
+  Type: redis
+  AuthMode: ""
+  SecretName: redisdb
+  Topics:
+    PublishTopicPrefix: edgex/events/device
+    CommandRequestTopic: edgex/device/command/request/device-plc/#
+    CommandResponseTopicPrefix: edgex/device/command/response
+    SystemEventTopic: edgex/system-events/core-metadata/device/+/device-plc/#
+  Optional:
+    ClientId: device-plc
+    Qos: "0"
+    KeepAlive: "10"
+    Retained: "false"
+    AutoReconnect: "true"
+    ConnectTimeout: "5"
+    SkipCertVerify: "false"

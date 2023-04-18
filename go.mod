@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/edgexfoundry/go-mod-bootstrap/v3 v3.0.0-dev.67
 	github.com/edgexfoundry/go-mod-core-contracts/v3 v3.0.0-dev.35
+	github.com/edgexfoundry/go-mod-messaging/v3 v3.0.0-dev.22
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.2
 )
@@ -16,7 +17,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.4.2 // indirect
 	github.com/edgexfoundry/go-mod-configuration/v3 v3.0.0-dev.10 // indirect
-	github.com/edgexfoundry/go-mod-messaging/v3 v3.0.0-dev.22 // indirect
 	github.com/edgexfoundry/go-mod-registry/v3 v3.0.0-dev.7 // indirect
 	github.com/edgexfoundry/go-mod-secrets/v3 v3.0.0-dev.13 // indirect
 	github.com/fatih/color v1.9.0 // indirect
@@ -29,6 +29,7 @@ require (
 	github.com/go-playground/validator/v10 v10.12.0 // indirect
 	github.com/go-redis/redis/v7 v7.3.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hashicorp/consul/api v1.20.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
