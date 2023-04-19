@@ -22,7 +22,6 @@ import (
 
 func main() {
 	service.BootStrap("test")
-	fmt.Println("after BootStrap")
 	ds := service.Service()
 	print := func(method string) func(device dtos.Device) error {
 		return func(device dtos.Device) error {

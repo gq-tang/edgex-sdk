@@ -48,7 +48,7 @@ func (s *service) metadataSystemEventsCallback(ctx context.Context, dic *di.Cont
 	messageBusInfo := container.ConfigurationFrom(dic.Get).MessageBus
 
 	metadataSystemEventTopic := common.BuildTopic(messageBusInfo.GetBaseTopicPrefix(),
-		common.MetadataSystemEventSubscribeTopic, "#", "#")
+		common.MetadataSystemEventSubscribeTopic, "#")
 
 	lc.Infof("Subscribing to System Events on topic: %s", metadataSystemEventTopic)
 
