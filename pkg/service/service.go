@@ -51,7 +51,7 @@ type service struct {
 	updateProfileCallback []ProfileAction
 }
 
-func NewDeviceService(serviceKey string) (*service, error) {
+func NewService(serviceKey string) (*service, error) {
 	var service service
 
 	if serviceKey == "" {

@@ -15,8 +15,6 @@ import (
 	"os"
 	"sync"
 
-	"github.com/gq-tang/edgex-sdk/internal/container"
-
 	bootstrapContainer "github.com/edgexfoundry/go-mod-bootstrap/v3/bootstrap/container"
 	"github.com/edgexfoundry/go-mod-bootstrap/v3/bootstrap/handlers"
 	"github.com/edgexfoundry/go-mod-bootstrap/v3/bootstrap/startup"
@@ -31,7 +29,7 @@ var (
 
 func BootStrap(serviceKey string) {
 	once.Do(func() {
-		defaultService, _ = NewDeviceService(serviceKey)
+		defaultService, _ = NewService(serviceKey)
 
 		if err := defaultService.Run(); err != nil {
 			fmt.Println(err)
@@ -49,7 +47,7 @@ func Service() *service {
 }
 
 func CommandClient() interfaces.CommandClient {
-	return container.CommandClientFrom(defaultService.dic.Get)
+	return defaultService.CommandClient()
 }
 
 func (s *service) messageBusBootstrapHandler(ctx context.Context, wg *sync.WaitGroup, startupTimer startup.Timer, dic *di.Container) bool {
