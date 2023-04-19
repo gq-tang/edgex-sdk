@@ -24,7 +24,7 @@ import (
 
 // AddDeviceProfile adds a new DeviceProfile to the Device Service and Core Metadata
 // Returns new DeviceProfile id or non-nil error.
-func (s *deviceService) AddDeviceProfile(profile models.DeviceProfile) (string, error) {
+func (s *service) AddDeviceProfile(profile models.DeviceProfile) (string, error) {
 	if p, ok := cache.Profiles().ForName(profile.Name); ok {
 		return p.Id, errors.NewCommonEdgeX(errors.KindDuplicateName, fmt.Sprintf("name conflicted, Profile %s exists", profile.Name), nil)
 	}
@@ -47,12 +47,12 @@ func (s *deviceService) AddDeviceProfile(profile models.DeviceProfile) (string, 
 }
 
 // DeviceProfiles return all managed DeviceProfiles from cache
-func (s *deviceService) DeviceProfiles() []models.DeviceProfile {
+func (s *service) DeviceProfiles() []models.DeviceProfile {
 	return cache.Profiles().All()
 }
 
 // GetProfileByName returns the Profile by its name if it exists in the cache, or returns an error.
-func (s *deviceService) GetProfileByName(name string) (models.DeviceProfile, error) {
+func (s *service) GetProfileByName(name string) (models.DeviceProfile, error) {
 	profile, ok := cache.Profiles().ForName(name)
 	if !ok {
 		msg := fmt.Sprintf("failed to find Profile %s in cache", name)
@@ -64,7 +64,7 @@ func (s *deviceService) GetProfileByName(name string) (models.DeviceProfile, err
 
 // RemoveDeviceProfileByName removes the specified DeviceProfile by name from the cache and ensures that the
 // instance in Core Metadata is also removed.
-func (s *deviceService) RemoveDeviceProfileByName(name string) error {
+func (s *service) RemoveDeviceProfileByName(name string) error {
 	profile, ok := cache.Profiles().ForName(name)
 	if !ok {
 		msg := fmt.Sprintf("failed to find Profile %s in cache", name)
@@ -86,7 +86,7 @@ func (s *deviceService) RemoveDeviceProfileByName(name string) error {
 
 // UpdateDeviceProfile updates the DeviceProfile in the cache and ensures that the
 // copy in Core Metadata is also updated.
-func (s *deviceService) UpdateDeviceProfile(profile models.DeviceProfile) error {
+func (s *service) UpdateDeviceProfile(profile models.DeviceProfile) error {
 	_, ok := cache.Profiles().ForName(profile.Name)
 	if !ok {
 		msg := fmt.Sprintf("failed to find Profile %s in cache", profile.Name)
@@ -108,7 +108,7 @@ func (s *deviceService) UpdateDeviceProfile(profile models.DeviceProfile) error 
 
 // DeviceCommand retrieves the specific DeviceCommand instance from cache according to
 // the Device name and Command name
-func (s *deviceService) DeviceCommand(deviceName string, commandName string) (models.DeviceCommand, bool) {
+func (s *service) DeviceCommand(deviceName string, commandName string) (models.DeviceCommand, bool) {
 	device, ok := cache.Devices().ForName(deviceName)
 	if !ok {
 		s.lc.Errorf("failed to find device %s in cache", deviceName)
@@ -124,7 +124,7 @@ func (s *deviceService) DeviceCommand(deviceName string, commandName string) (mo
 
 // DeviceResource retrieves the specific DeviceResource instance from cache according to
 // the Device name and Device Resource name
-func (s *deviceService) DeviceResource(deviceName string, deviceResource string) (models.DeviceResource, bool) {
+func (s *service) DeviceResource(deviceName string, deviceResource string) (models.DeviceResource, bool) {
 	device, ok := cache.Devices().ForName(deviceName)
 	if !ok {
 		s.lc.Errorf("failed to find device %s in cache", deviceName)

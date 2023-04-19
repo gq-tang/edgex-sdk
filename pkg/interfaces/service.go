@@ -10,6 +10,7 @@
 package interfaces
 
 import (
+	"github.com/edgexfoundry/go-mod-core-contracts/v3/clients/interfaces"
 	"github.com/edgexfoundry/go-mod-core-contracts/v3/models"
 )
 
@@ -68,4 +69,7 @@ type DeviceServiceSDK interface {
 	// UpdateDeviceOperatingState updates the Device's OperatingState with given name
 	// in Core Metadata and device service cache.
 	UpdateDeviceOperatingState(deviceName string, state string) error
+
+	//
+	CommandClient() interfaces.CommandClient
 }

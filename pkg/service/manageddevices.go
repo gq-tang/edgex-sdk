@@ -25,7 +25,7 @@ import (
 
 // AddDevice adds a new Device to the Device Service and Core Metadata
 // Returns new Device id or non-nil error.
-func (s *deviceService) AddDevice(device models.Device) (string, error) {
+func (s *service) AddDevice(device models.Device) (string, error) {
 	if d, ok := cache.Devices().ForName(device.Name); ok {
 		return d.Id, errors.NewCommonEdgeX(errors.KindDuplicateName, fmt.Sprintf("name conflicted, Device %s exists", device.Name), nil)
 	}
@@ -43,12 +43,12 @@ func (s *deviceService) AddDevice(device models.Device) (string, error) {
 }
 
 // Devices return all managed Devices from cache
-func (s *deviceService) Devices() []models.Device {
+func (s *service) Devices() []models.Device {
 	return cache.Devices().All()
 }
 
 // GetDeviceByName returns the Device by its name if it exists in the cache, or returns an error.
-func (s *deviceService) GetDeviceByName(name string) (models.Device, error) {
+func (s *service) GetDeviceByName(name string) (models.Device, error) {
 	device, ok := cache.Devices().ForName(name)
 	if !ok {
 		msg := fmt.Sprintf("failed to find Device %s in cache", name)
@@ -60,7 +60,7 @@ func (s *deviceService) GetDeviceByName(name string) (models.Device, error) {
 
 // RemoveDeviceByName removes the specified Device by name from the cache and ensures that the
 // instance in Core Metadata is also removed.
-func (s *deviceService) RemoveDeviceByName(name string) error {
+func (s *service) RemoveDeviceByName(name string) error {
 	device, ok := cache.Devices().ForName(name)
 	if !ok {
 		msg := fmt.Sprintf("failed to find device %s in cache", name)
@@ -80,7 +80,7 @@ func (s *deviceService) RemoveDeviceByName(name string) error {
 
 // UpdateDevice updates the Device in the cache and ensures that the
 // copy in Core Metadata is also updated.
-func (s *deviceService) UpdateDevice(device models.Device) error {
+func (s *service) UpdateDevice(device models.Device) error {
 	_, ok := cache.Devices().ForName(device.Name)
 	if !ok {
 		msg := fmt.Sprintf("failed to find Device %s in cache", device.Name)
@@ -102,7 +102,7 @@ func (s *deviceService) UpdateDevice(device models.Device) error {
 
 // UpdateDeviceOperatingState updates the Device's OperatingState with given name
 // in Core Metadata and device service cache.
-func (s *deviceService) UpdateDeviceOperatingState(deviceName string, state string) error {
+func (s *service) UpdateDeviceOperatingState(deviceName string, state string) error {
 	d, ok := cache.Devices().ForName(deviceName)
 	if !ok {
 		msg := fmt.Sprintf("failed to find Device %s in cache", deviceName)
@@ -128,7 +128,7 @@ func (s *deviceService) UpdateDeviceOperatingState(deviceName string, state stri
 }
 
 // SetDeviceOpState sets the operating state of device
-func (s *deviceService) SetDeviceOpState(name string, state models.OperatingState) error {
+func (s *service) SetDeviceOpState(name string, state models.OperatingState) error {
 	d, err := s.GetDeviceByName(name)
 	if err != nil {
 		return err

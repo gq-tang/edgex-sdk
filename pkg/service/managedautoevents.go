@@ -17,7 +17,7 @@ import (
 )
 
 // AddDeviceAutoEvent adds a new AutoEvent to the Device with given name
-func (s *deviceService) AddDeviceAutoEvent(deviceName string, event models.AutoEvent) error {
+func (s *service) AddDeviceAutoEvent(deviceName string, event models.AutoEvent) error {
 	found := false
 	device, ok := cache.Devices().ForName(deviceName)
 	if !ok {
@@ -50,7 +50,7 @@ func (s *deviceService) AddDeviceAutoEvent(deviceName string, event models.AutoE
 }
 
 // RemoveDeviceAutoEvent removes an AutoEvent from the Device with given name
-func (s *deviceService) RemoveDeviceAutoEvent(deviceName string, event models.AutoEvent) error {
+func (s *service) RemoveDeviceAutoEvent(deviceName string, event models.AutoEvent) error {
 	device, ok := cache.Devices().ForName(deviceName)
 	if !ok {
 		msg := fmt.Sprintf("failed to find device %s cannot in cache", deviceName)

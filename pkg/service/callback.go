@@ -27,23 +27,23 @@ type DeviceAction func(device dtos.Device) error
 
 type ProfileAction func(profile dtos.DeviceProfile) error
 
-func (s *deviceService) HandleDeviceAdd(fn DeviceAction) {
+func (s *service) HandleDeviceAdd(fn DeviceAction) {
 	s.addDevCallback = append(s.addDevCallback, fn)
 }
 
-func (s *deviceService) HandleDeviceUpdate(fn DeviceAction) {
+func (s *service) HandleDeviceUpdate(fn DeviceAction) {
 	s.updateDevCallback = append(s.updateDevCallback, fn)
 }
 
-func (s *deviceService) HandleDeviceDelete(fn DeviceAction) {
+func (s *service) HandleDeviceDelete(fn DeviceAction) {
 	s.deleteDevCallback = append(s.deleteDevCallback, fn)
 }
 
-func (s *deviceService) HandleProfileUpdate(fn ProfileAction) {
+func (s *service) HandleProfileUpdate(fn ProfileAction) {
 	s.updateProfileCallback = append(s.updateProfileCallback, fn)
 }
 
-func (s *deviceService) metadataSystemEventsCallback(ctx context.Context, dic *di.Container) errors.EdgeX {
+func (s *service) metadataSystemEventsCallback(ctx context.Context, dic *di.Container) errors.EdgeX {
 	lc := bootstrapContainer.LoggingClientFrom(dic.Get)
 	messageBusInfo := container.ConfigurationFrom(dic.Get).MessageBus
 
@@ -117,7 +117,7 @@ func (s *deviceService) metadataSystemEventsCallback(ctx context.Context, dic *d
 	return nil
 }
 
-func (s *deviceService) deviceSystemEventAction(systemEvent dtos.SystemEvent, dic *di.Container) error {
+func (s *service) deviceSystemEventAction(systemEvent dtos.SystemEvent, dic *di.Container) error {
 	var device dtos.Device
 	err := systemEvent.DecodeDetails(&device)
 	if err != nil {
@@ -153,7 +153,7 @@ func (s *deviceService) deviceSystemEventAction(systemEvent dtos.SystemEvent, di
 	return err
 }
 
-func (s *deviceService) deviceProfileSystemEventAction(systemEvent dtos.SystemEvent, dic *di.Container) error {
+func (s *service) deviceProfileSystemEventAction(systemEvent dtos.SystemEvent, dic *di.Container) error {
 	var deviceProfile dtos.DeviceProfile
 	err := systemEvent.DecodeDetails(&deviceProfile)
 	if err != nil {
@@ -177,7 +177,7 @@ func (s *deviceService) deviceProfileSystemEventAction(systemEvent dtos.SystemEv
 	return err
 }
 
-func (s *deviceService) provisionWatcherSystemEventAction(systemEvent dtos.SystemEvent, dic *di.Container) error {
+func (s *service) provisionWatcherSystemEventAction(systemEvent dtos.SystemEvent, dic *di.Container) error {
 	var pw dtos.ProvisionWatcher
 	err := systemEvent.DecodeDetails(&pw)
 	if err != nil {
@@ -198,7 +198,7 @@ func (s *deviceService) provisionWatcherSystemEventAction(systemEvent dtos.Syste
 	return err
 }
 
-func (s *deviceService) deviceServiceSystemEventAction(systemEvent dtos.SystemEvent, dic *di.Container) error {
+func (s *service) deviceServiceSystemEventAction(systemEvent dtos.SystemEvent, dic *di.Container) error {
 	var deviceService dtos.DeviceService
 	err := systemEvent.DecodeDetails(&deviceService)
 	if err != nil {

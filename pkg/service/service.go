@@ -13,6 +13,7 @@ import (
 	"context"
 	"errors"
 	"os"
+	"sync"
 
 	"github.com/gq-tang/edgex-sdk/container"
 	sdkCommon "github.com/gq-tang/edgex-sdk/internal/common"
@@ -31,14 +32,17 @@ import (
 
 const EnvInstanceName = "EDGEX_INSTANCE_NAME"
 
-type deviceService struct {
+type service struct {
 	serviceKey string
-	lc         logger.LoggingClient
-	config     *config.ConfigurationStruct
-	flags      *flags.Default
-	dic        *di.Container
 
+	ctx    context.Context
 	cancel context.CancelFunc
+	wg     *sync.WaitGroup
+
+	lc     logger.LoggingClient
+	config *config.ConfigurationStruct
+	flags  *flags.Default
+	dic    *di.Container
 
 	addDevCallback    []DeviceAction
 	updateDevCallback []DeviceAction
@@ -47,19 +51,23 @@ type deviceService struct {
 	updateProfileCallback []ProfileAction
 }
 
-func NewDeviceService(serviceKey string) (*deviceService, error) {
-	var service deviceService
+func NewDeviceService(serviceKey string) (*service, error) {
+	var service service
 
 	if serviceKey == "" {
 		return nil, errors.New("please specify device service name")
 	}
+	ctx, cancel := context.WithCancel(context.Background())
+	service.ctx = ctx
+	service.cancel = cancel
 
 	service.serviceKey = serviceKey
 	service.config = &config.ConfigurationStruct{}
+
 	return &service, nil
 }
 
-func (s *deviceService) Run() error {
+func (s *service) Run() error {
 	var instanceName string
 	startupTimer := startup.NewStartUpTimer(s.serviceKey)
 
@@ -77,10 +85,10 @@ func (s *deviceService) Run() error {
 			return s.config
 		},
 	})
-	ctx, cancel := context.WithCancel(context.Background())
+
 	wg, deferred, successful := bootstrap.RunAndReturnWaitGroup(
-		ctx,
-		cancel,
+		s.ctx,
+		s.cancel,
 		s.flags,
 		s.serviceKey,
 		common.ConfigStemDevice,
@@ -91,9 +99,9 @@ func (s *deviceService) Run() error {
 		true,
 		bootstrapTypes.ServiceTypeDevice,
 		[]bootstrapInterfaces.BootstrapHandler{
+			handlers.NewClientsBootstrap().BootstrapHandler,
 			s.messageBusBootstrapHandler,
 			handlers.NewServiceMetrics(s.serviceKey).BootstrapHandler, // Must be after Messaging
-			handlers.NewClientsBootstrap().BootstrapHandler,
 			handlers.NewStartMessage(s.serviceKey, sdkCommon.ServiceVersion).BootstrapHandler,
 		})
 
@@ -102,15 +110,22 @@ func (s *deviceService) Run() error {
 	}()
 
 	if !successful {
-		cancel()
+		s.cancel()
 		return errors.New("bootstrapping failed")
 	}
 
-	wg.Wait()
+	s.wg = wg
 	return nil
 }
 
-func (s *deviceService) setServiceName(instanceName string) {
+func (s *service) Stop() {
+	if s.wg != nil {
+		s.cancel()
+		s.wg.Wait()
+	}
+}
+
+func (s *service) setServiceName(instanceName string) {
 	envValue := os.Getenv(EnvInstanceName)
 	if len(envValue) > 0 {
 		instanceName = envValue

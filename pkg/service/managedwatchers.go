@@ -23,7 +23,7 @@ import (
 
 // AddProvisionWatcher adds a new Watcher to the cache and Core Metadata
 // Returns new Watcher id or non-nil error.
-func (s *deviceService) AddProvisionWatcher(watcher models.ProvisionWatcher) (string, error) {
+func (s *service) AddProvisionWatcher(watcher models.ProvisionWatcher) (string, error) {
 	if pw, ok := cache.ProvisionWatchers().ForName(watcher.Name); ok {
 		return pw.Id,
 			errors.NewCommonEdgeX(errors.KindDuplicateName, fmt.Sprintf("name conflicted, ProvisionWatcher %s exists", watcher.Name), nil)
@@ -42,12 +42,12 @@ func (s *deviceService) AddProvisionWatcher(watcher models.ProvisionWatcher) (st
 }
 
 // ProvisionWatchers return all managed Watchers from cache
-func (s *deviceService) ProvisionWatchers() []models.ProvisionWatcher {
+func (s *service) ProvisionWatchers() []models.ProvisionWatcher {
 	return cache.ProvisionWatchers().All()
 }
 
 // GetProvisionWatcherByName returns the Watcher by its name if it exists in the cache, or returns an error.
-func (s *deviceService) GetProvisionWatcherByName(name string) (models.ProvisionWatcher, error) {
+func (s *service) GetProvisionWatcherByName(name string) (models.ProvisionWatcher, error) {
 	pw, ok := cache.ProvisionWatchers().ForName(name)
 	if !ok {
 		msg := fmt.Sprintf("failed to find ProvisionWatcher %s in cache", name)
@@ -59,7 +59,7 @@ func (s *deviceService) GetProvisionWatcherByName(name string) (models.Provision
 
 // RemoveProvisionWatcher removes the specified Watcher by name from the cache and ensures that the
 // instance in Core Metadata is also removed.
-func (s *deviceService) RemoveProvisionWatcher(name string) error {
+func (s *service) RemoveProvisionWatcher(name string) error {
 	pw, ok := cache.ProvisionWatchers().ForName(name)
 	if !ok {
 		msg := fmt.Sprintf("failed to find ProvisionWatcher %s in cache", name)
@@ -80,7 +80,7 @@ func (s *deviceService) RemoveProvisionWatcher(name string) error {
 
 // UpdateProvisionWatcher updates the Watcher in the cache and ensures that the
 // copy in Core Metadata is also updated.
-func (s *deviceService) UpdateProvisionWatcher(watcher models.ProvisionWatcher) error {
+func (s *service) UpdateProvisionWatcher(watcher models.ProvisionWatcher) error {
 	_, ok := cache.ProvisionWatchers().ForName(watcher.Name)
 	if !ok {
 		msg := fmt.Sprintf("failed to find ProvisionWatcher %s in cache", watcher.Name)

@@ -10,6 +10,10 @@ Clients:
     Protocol: http
     Host: 192.168.237.129
     Port: 59881
+  core-command:
+    Protocol: http
+    Host: 192.168.237.129
+    Port: 59882
 MessageBus:
   Protocol: redis
   Host: 192.168.237.129
